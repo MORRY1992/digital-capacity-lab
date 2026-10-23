@@ -26,11 +26,8 @@ jobs:
       - run: node scripts/build.mjs
       - run: node --test tests/*.test.mjs
       - name: Check deployed pages (scheduled or manual only)
-        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && vars.SITE_URL != '' }}
+        if: ${{ github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' }}
         env:
-          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_URL: ${{ vars.SITE_URL || 'https://digital-capacity-lab.pages.dev' }}
           ADSENSE_VERIFIED_PUBLISHER: ${{ vars.ADSENSE_VERIFIED_PUBLISHER }}
         run: node scripts/check-live.mjs
-      - name: Record pending live configuration
-        if: ${{ vars.SITE_URL == '' }}
-        run: echo 'Live HTTP checks are not enabled. Set the verified SITE_URL repository variable after deployment.' >> "$GITHUB_STEP_SUMMARY"

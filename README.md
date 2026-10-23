@@ -1,8 +1,8 @@
 # デジタル容量設計室 / Digital Capacity Lab
 
 F計画SPの無料容量計算サイト。2026-10-23制作。
-**現状：ローカル制作・検証済み。専用GitHubリポジトリ作成済み。Cloudflare公開とAdSense登録は未実施。**
-リポジトリ：https://github.com/MORRY1992/digital-capacity-lab （Public）。公開サイトURLは未発行。
+**現状：Cloudflare Pagesで公開済み。公開20エンドポイントのHTTP・本番設定・計算コード一致検査に合格（2026-10-23）。AdSense登録・申請は未実施。**
+リポジトリ：https://github.com/MORRY1992/digital-capacity-lab （Public）。公開サイト：https://digital-capacity-lab.pages.dev
 
 ## 構成
 
@@ -36,7 +36,7 @@ node --test tests/*.test.mjs
 6. 確定したプロジェクトの `https://…pages.dev` を `SITE_URL`、公開済みrepoの `https://github.com/MORRY1992/…/issues` を `CONTACT_URL` に設定。Nodeは22以上。変数は秘密情報ではない。URL確定前に仮ドメインを本番用として使わない。
 7. 本番ビルドはSITE_URL/CONTACT_URLが空欄なら失敗する。初期デプロイでURLが確定する場合、確定後に変数を設定して再デプロイする。
 8. 公開ページで3ツール操作・リンク・404・広告未配信を確認。`SITE_URL`を設定して `node scripts/check-live.mjs` を実行。
-9. GitHub repository variable `SITE_URL`にも同じ値を設定。Actions稼働履歴を確認する。
+9. 日次・週次のHTTP監視は上記の検証済み公開URLを既定値に使用する。移転時はGitHub repository variable `SITE_URL`で上書きし、Cloudflareの本番URLと一致させる。Actions稼働履歴を確認する。
 
 公開リポジトリの標準GitHub-hostedランナーは無料という公式条件を確認済み。ただし既存repoはいずれもprivate。**この新規repoもprivateを選んだ場合は無料枠残量を確認するまでworkflowは起動しない。** 確認して無料枠内で運用できる場合のみ `ALLOW_FREE_ACTIONS=true` を設定する。支出上限を勝手に変更しない。
 
@@ -48,4 +48,4 @@ node --test tests/*.test.mjs
 
 ## 保守
 
-`docs/OPERATIONS.md`、`docs/QA.md`、`docs/ADSENSE.md`を参照。自動検査は実装済み。GitHub Actions初回実行は成功（2026-10-23、15秒）。https://github.com/MORRY1992/digital-capacity-lab/actions/runs/39930743918 。日次/週次スケジュール登録済み。本番HTTP監視はSITE_URL未設定のためまだ無効。常時稼働や自動復旧、収益を保証しない。
+`docs/OPERATIONS.md`、`docs/QA.md`、`docs/ADSENSE.md`を参照。自動検査は実装済み。GitHub Actions初回実行は成功（2026-10-23、15秒）。https://github.com/MORRY1992/digital-capacity-lab/actions/runs/39930743918 。日次/週次スケジュール登録済み。本番HTTP監視には検証済み公開URLを設定済み。公開後初回の定期実行結果は未確認。常時稼働や自動復旧、収益を保証しない。
