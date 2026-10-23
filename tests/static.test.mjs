@@ -1,0 +1,11 @@
+import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+const dist=path.resolve('dist');
+function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path.join(dir,d.name)):[path.join(dir,d.name)]);}
+const files=walk(dist),html=files.filter(f=>f.endsWith('.html'));
+test('13 content pages and 404',()=>assert.equal(html.length,14));
+test('all local references resolve',()=>{for(const f of html){const body=fs.readFileSync(f,'utf8');for(const m of body.matchAll(/(?:href|src)="(\/[^"#]*)/g)){const file=path.join(dist,m[1]);assert.ok(fs.existsSync(file),`${f}: broken ${m[1]}`);}}});
+test('language titles descriptions and viewport',()=>{for(const f of html){const body=fs.readFileSync(f,'utf8');assert.match(body,/<html lang="ja">/);assert.match(body,/<title>[^<]+<\/title>/);assert.match(body,/name="viewport"/);if(!f.endsWith('404.html'))assert.match(body,/name="description"/);}});
+test('no third-party ad code or file collection',()=>{for(const f of html){const b=fs.readFileSync(f,'utf8');assert.doesNotMatch(b,/popunder|adsterra|<script[^>]+src="https|type="file"/i);}});
+test('every input and select has a label; unique static IDs',()=>{for(const f of html){const b=fs.readFileSync(f,'utf8'),ids=[...b.matchAll(/\sid="([^"]+)"/g)].map(m=>m[1]);assert.equal(ids.length,new Set(ids).size,f);for(const m of b.matchAll(/<(?:input|select) id="([^"]+)"/g))assert.ok(b.includes(`for="${m[1]}"`),m[1]);}});
+test('asset transfer budget under 150 KB uncompressed per page',()=>{const assets=['style.css','core.mjs','app.mjs'].reduce((s,f)=>s+fs.statSync(dist+'/'+f).size,0);for(const f of html)assert.ok(fs.statSync(f).size+assets<150000);});
+test('security headers and no external dependencies',()=>{assert.match(fs.readFileSync(dist+'/_headers','utf8'),/frame-ancestors 'none'/);assert.match(fs.readFileSync(dist+'/_headers','utf8'),/object-src 'none'/);const p=JSON.parse(fs.readFileSync('package.json','utf8'));assert.equal(p.dependencies,undefined);});

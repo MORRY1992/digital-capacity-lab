@@ -1,0 +1,36 @@
+name: Quality and uptime
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 23 * * *'
+    - cron: '47 0 * * 5'
+permissions:
+  contents: read
+concurrency:
+  group: quality-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  quality:
+    # Private repositories stay inactive until the owner verifies remaining free usage.
+    if: ${{ github.event.repository.private == false || vars.ALLOW_FREE_ACTIONS == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node scripts/build.mjs
+      - run: node --test tests/*.test.mjs
+      - name: Check deployed pages (scheduled or manual only)
+        if: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && vars.SITE_URL != '' }}
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          ADSENSE_VERIFIED_PUBLISHER: ${{ vars.ADSENSE_VERIFIED_PUBLISHER }}
+        run: node scripts/check-live.mjs
+      - name: Record pending live configuration
+        if: ${{ vars.SITE_URL == '' }}
+        run: echo 'Live HTTP checks are not enabled. Set the verified SITE_URL repository variable after deployment.' >> "$GITHUB_STEP_SUMMARY"
