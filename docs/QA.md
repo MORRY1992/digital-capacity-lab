@@ -41,14 +41,14 @@
 - 2026-10-23追記：MORRY1992で認証完了。専用Publicリポジトリ digital-capacity-lab を作成。既存サイトは変更なし。
 - Cloudflare公開・無料枠残量・本番URL確認は未実施。
 - 本番HTTP20エンドポイント検査は実装済みだが未実行。
-- 日次/週次workflowは実装済みだが登録・稼働は未完了。
+- 日次/週次workflowをGitHubへ登録済み。初回push検査成功（run 39930743918、15秒）。定期時刻の実行と本番HTTP検査は未確認。
 - AdSenseアカウント照合、審査登録、承認、広告表示、収益発生は未実施/未確認。
 - Time Atlas等の全機能・管理先未確認。既存3repoのREADMEを読み、機能領域を分離。既存コード・広告設定は変更なし。
 
 ## 次の担当作業
 
-1. GitHubを安全な認証画面でログインし、MORRY1992であることを確認。
-2. 専用repo作成、コード登録、無料Actions方針と公開問い合わせを確定。
+1. GitHub認証・専用repo登録・初回CI成功は確認済み。
+2. 専用repoはPublicで標準runner使用。問い合わせ先は https://github.com/MORRY1992/digital-capacity-lab/issues を採用する。
 3. Cloudflare認証→無料枠確認→Git接続→本番ビルド→実URLを記録。
 4. 本番のスマホ/PC操作、HTTP検査、Actions手動実行を確認。
 5. AdSense IDを管理画面で照合→設定→本人承認後に正式申請。

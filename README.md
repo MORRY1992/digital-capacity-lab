@@ -48,4 +48,4 @@ node --test tests/*.test.mjs
 
 ## 保守
 
-`docs/OPERATIONS.md`、`docs/QA.md`、`docs/ADSENSE.md`を参照。自動検査は実装済み。GitHub Actionsの初回実行結果は公開設定の作業中に確認する。常時稼働や自動復旧、収益を保証しない。
+`docs/OPERATIONS.md`、`docs/QA.md`、`docs/ADSENSE.md`を参照。自動検査は実装済み。GitHub Actions初回実行は成功（2026-10-23、15秒）。https://github.com/MORRY1992/digital-capacity-lab/actions/runs/39930743918 。日次/週次スケジュール登録済み。本番HTTP監視はSITE_URL未設定のためまだ無効。常時稼働や自動復旧、収益を保証しない。
