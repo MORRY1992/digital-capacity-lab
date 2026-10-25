@@ -27,3 +27,20 @@ export function streaming(v){
   return {daily,total,mobile:total*mobile/100,wifi:total*(1-mobile/100),compare,difference:compare-total};
 }
 export function format(value,unit='GB'){if(!Object.hasOwn(UNITS,unit)||!Number.isFinite(value)||value<0)throw new Error('表示値を確認してください。');const n=value/UNITS[unit];return (n>0&&n<0.001?'< 0.001':n.toLocaleString('ja-JP',{maximumFractionDigits:3}))+' '+unit;}
+
+
+export function averageBitrate(size,unit,minutes){
+ const seconds=numeric(minutes,1440)*60;if(seconds===0)throw new Error('再生時間は0より大きい値を入力してください。');
+ const rate=bytes(size,unit)*8/seconds/1e6;
+ if(rate>10000)throw new Error('逆算値が10,000 Mb/sを超えています。容量・時間・単位を確認してください。');
+ return rate;
+}
+export function backupFragment(total){
+ if(!Number.isFinite(total)||total<0||total>1e21)throw new Error('引き継げる容量の範囲外です。');
+ return '#capacity='+total.toLocaleString('en-US',{useGrouping:false,maximumSignificantDigits:21});
+}
+export function readBackupFragment(hash){
+ if(!/^#capacity=\d+(?:\.\d+)?(?:e\+?\d+)?$/.test(hash))return null;
+ const total=Number(hash.slice(10));if(!Number.isFinite(total)||total<0||total>1e21)return null;
+ const unit=total<=1e18?'GB':'TB';return {original:(total/UNITS[unit]).toLocaleString('en-US',{useGrouping:false,maximumSignificantDigits:21}),unit};
+}
