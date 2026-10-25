@@ -9,3 +9,5 @@
 - 別サイトの設定や自動広告のアカウント設定は変更しない。合格や収益は保証しない。
 
 [改善レビュー](REVIEW_20261025.md)
+
+最新の申請直前準備は [ADSENSE_PRE_SUBMISSION.md](ADSENSE_PRE_SUBMISSION.md)。改修内容は [Round 2](REVIEW_20261025_ROUND2.md)。

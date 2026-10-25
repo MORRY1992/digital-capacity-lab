@@ -29,3 +29,30 @@ test('storage reverse bitrate, successful result, manual copy fallback, invalida
  assert.equal(b.inputs.get('original').value,'8.25');assert.equal(b.replaced(),'/backup/');assert.match(b.result.innerHTML,/9.9 GB/);assert.match(b.result.innerHTML,/確保可能/);
  globalThis.FormData=saved;for(const name of ['document','location','history','navigator'])delete globalThis[name];
 });
+test('profiles require explicit action; save/load/delete work across visits and storage failures keep calculator usable',async()=>{
+ const originalFormData=globalThis.FormData,map=new Map();let reads=0,writes=0,blocked=false;
+ const storage={setItem(k,v){if(blocked)throw Error('quota');writes++;map.set(k,v);},getItem(k){if(blocked)throw Error('blocked');reads++;return map.get(k)??null;},removeItem(k){if(blocked)throw Error('blocked');map.delete(k);}};
+ Object.defineProperty(globalThis,'localStorage',{configurable:true,get(){if(blocked)throw Error('access denied');return storage;}});
+ const e=setup('storage');await import('../src/app.mjs?profile-save');assert.equal(reads+writes,0);
+ e.inputs.get('photos').value='100';await e.form.fire('input');await e.get('save-profile').fire('click');assert.equal(writes,1);
+ const next=setup('storage');await import('../src/app.mjs?profile-load');assert.equal(next.inputs.get('photos').value,'1500');assert.equal(reads,0);
+ await next.get('load-profile').fire('click');assert.equal(next.inputs.get('photos').value,'100');assert.match(next.result.innerHTML,/2.65 GB/);
+ map.set('dcl-conditions-v1:streaming','other-tool');await next.get('delete-profile').fire('click');assert.equal(map.has('dcl-conditions-v1:storage'),false);assert.equal(map.get('dcl-conditions-v1:streaming'),'other-tool');
+ await next.get('load-profile').fire('click');assert.match(next.get('profile-status').textContent,/保存条件はありません/);
+ blocked=true;await next.get('save-profile').fire('click');assert.match(next.get('profile-status').textContent,/利用できません/);await next.form.fire('submit');assert.match(next.result.innerHTML,/2.65 GB/);
+ await next.get('load-profile').fire('click');assert.match(next.get('profile-status').textContent,/利用できません/);
+ await next.get('delete-profile').fire('click');assert.match(next.get('profile-status').textContent,/利用できません/);
+ blocked=false;map.set('dcl-conditions-v1:storage','{bad');await next.get('load-profile').fire('click');assert.equal(next.inputs.get('photos').value,'100');assert.match(next.get('profile-status').textContent,/読み込めません/);
+ next.inputs.get('rate').value='';const before=writes;await next.get('save-profile').fire('click');assert.equal(writes,before);assert.match(next.get('profile-status').textContent,/保存できません/);
+ globalThis.FormData=originalFormData;for(const name of ['document','location','history','navigator','localStorage'])delete globalThis[name];
+});
+test('backup profile restores dynamic destination count and each unit before recalculation',async()=>{
+ const originalFormData=globalThis.FormData,map=new Map();globalThis.localStorage={setItem:(k,v)=>map.set(k,v),getItem:k=>map.get(k)??null,removeItem:k=>map.delete(k)};
+ const b=setup('backup');await import('../src/app.mjs?profile-backup');b.inputs.get('copies').value='5';await b.form.fire('change',b.inputs.get('copies'));
+ for(let i=0;i<5;i++){b.inputs.get('dest'+i).value=String(i+1);b.inputs.get('destUnit'+i).value='TB';}
+ await b.get('save-profile').fire('click');assert.match(b.get('profile-status').textContent,/保存しました/);
+ b.inputs.get('copies').value='0';await b.form.fire('change',b.inputs.get('copies'));await b.get('load-profile').fire('click');
+ assert.equal(b.inputs.get('copies').value,'5');for(let i=0;i<5;i++){assert.equal(b.inputs.get('dest'+i).value,String(i+1));assert.equal(b.inputs.get('destUnit'+i).value,'TB');}
+ assert.match(b.result.innerHTML,/120 GB/);assert.match(b.result.innerHTML,/保存先 5：確保可能/);
+ globalThis.FormData=originalFormData;for(const name of ['document','location','history','navigator','localStorage'])delete globalThis[name];
+});

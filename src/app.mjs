@@ -1,3 +1,4 @@
+import {initProfiles} from './profiles.mjs';
 import {media,backup,streaming,format,numeric,averageBitrate,backupFragment,readBackupFragment} from './core.mjs';
 const form=document.querySelector('#calculator');
 const tool=document.querySelector('main').dataset.tool;
@@ -69,3 +70,5 @@ function showMemo(){if(!memo)return;byId('memo-fallback').hidden=false;byId('mem
 byId('show-result').addEventListener('click',showMemo);
 byId('copy-result').addEventListener('click',async()=>{if(!memo)return;const current=revision,text=memo;byId('copy-result').disabled=true;let ok=false;try{await navigator.clipboard.writeText(text);ok=true;}catch{}if(revision!==current)return;byId('copy-result').disabled=false;byId('memo-status').textContent=ok?'条件と結果をコピーしました。共有前に内容をご確認ください。':'自動コピーができません。下のメモを選択してコピーしてください。';if(!ok)showMemo();});
 if(tool==='storage')byId('apply-bitrate').addEventListener('click',()=>{invalidate();try{const rate=averageBitrate(value('sampleSize'),value('sampleUnit'),value('sampleMinutes'));form.elements.namedItem('rate').value=rate.toLocaleString('en-US',{useGrouping:false,maximumSignificantDigits:21});form.elements.namedItem('minutes').value=value('sampleMinutes');form.elements.namedItem('audioMode').value='included';audio();byId('bitrate-status').textContent=rate.toLocaleString('ja-JP',{maximumFractionDigits:6})+' Mb/sを反映しました。1本の長さも反映済みです。本数・写真枚数を確認して計算してください。';}catch(e){byId('bitrate-status').textContent=e.message;}});
+
+initProfiles({tool,form,byId,validate,rebuild:destinations,audio,calculate});
