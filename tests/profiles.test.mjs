@@ -18,3 +18,10 @@ test('corrupt, oversized, mismatched, and invalid saved values are rejected befo
  assert.throws(()=>encodeProfile('backup',{original:'1',unit:'GB',copies:'6',margin:'0'}));
  assert.throws(()=>encodeProfile('backup',{original:'1',unit:'GB',copies:'1',margin:'0'}));
 });
+test('saved values must fit the actual number inputs and select options before any restoration',()=>{
+ const b={original:'100',unit:'GB',copies:'2',margin:'20',dest0:'128',destUnit0:'GB',dest1:'1',destUnit1:'TB'};
+ for(const values of [{...storage,minutes:' 10 '},{...storage,photoUnit:'GB'},{...storage,photoUnit:'TB'}])
+  assert.throws(()=>decodeProfile('storage',JSON.stringify({version:1,tool:'storage',values})));
+ for(const values of [{...b,copies:'2.0'},{...b,copies:'02'},{...b,unit:'MB'},{...b,destUnit0:'MiB'},{...b,dest0:' 128 '}])
+  assert.throws(()=>decodeProfile('backup',JSON.stringify({version:1,tool:'backup',values})));
+});
