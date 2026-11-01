@@ -56,3 +56,65 @@ test('backup profile restores dynamic destination count and each unit before rec
  assert.match(b.result.innerHTML,/120 GB/);assert.match(b.result.innerHTML,/保存先 5：確保可能/);
  globalThis.FormData=originalFormData;for(const name of ['document','location','history','navigator','localStorage'])delete globalThis[name];
 });
+test('each calculator survives corrupt profiles and distinct storage access/read/write/delete failures',async()=>{
+ const originalFormData=globalThis.FormData;
+ try{
+  for(const tool of ['storage','backup','streaming']){
+   const map=new Map();let failure='';
+   const store={setItem(k,v){if(failure==='write')throw Error('quota');map.set(k,v);},getItem(k){if(failure==='read')throw Error('denied');return map.get(k)??null;},removeItem(k){if(failure==='delete')throw Error('denied');map.delete(k);}};
+   Object.defineProperty(globalThis,'localStorage',{configurable:true,get(){if(failure==='access')throw Error('blocked');return store;}});
+   const e=setup(tool);await import(`../src/app.mjs?resilience-${tool}`);
+   const before=[...e.inputs].map(([k,v])=>[k,v.value]),result=e.result.innerHTML,key='dcl-conditions-v1:'+tool;
+   await e.get('save-profile').fire('click');const valid=map.get(key);assert.ok(valid);
+   const corrupt=JSON.parse(valid);
+   if(tool==='backup')corrupt.values.copies='2.0';else if(tool==='storage')corrupt.values.photoUnit='GB';else corrupt.values.hours=' 1 ';
+   for(const text of ['{bad',JSON.stringify(corrupt)]){
+    map.set(key,text);await e.get('load-profile').fire('click');
+    assert.deepEqual([...e.inputs].map(([k,v])=>[k,v.value]),before,'failed load must not mutate the form');
+    await e.form.fire('submit');assert.equal(e.result.innerHTML,result);
+   }
+   map.set(key,valid);
+   for(const [mode,button] of [['write','save-profile'],['read','load-profile'],['delete','delete-profile'],['access','load-profile']]){
+    failure=mode;await e.get(button).fire('click');assert.match(e.get('profile-status').textContent,/このまま計算できます/);
+    assert.equal(map.get(key),valid,'failed storage operation must leave the saved profile intact');
+    await e.form.fire('submit');assert.equal(e.result.innerHTML,result);
+   }
+   failure='';await e.get('delete-profile').fire('click');assert.equal(map.has(key),false);
+   await e.form.fire('submit');assert.equal(e.result.innerHTML,result);
+  }
+ }finally{globalThis.FormData=originalFormData;for(const name of ['document','location','history','navigator','localStorage'])delete globalThis[name];}
+});
+test('all three profiles survive a new visit independently; deleting one preserves the other two',async()=>{
+ const originalFormData=globalThis.FormData,map=new Map();
+ const cases={
+  storage:{values:{photos:'321'},result:/3.534 GB/},
+  backup:{values:{original:'200',margin:'25',copies:'3',dest0:'100',destUnit0:'GB',dest1:'1',destUnit1:'TiB',dest2:'2',destUnit2:'TB'},result:/250 GB/},
+  streaming:{values:{rate:'8',compareRate:'4',hours:'2',days:'20',mobile:'25'},result:/144 GB/}
+ };
+ globalThis.localStorage={setItem:(k,v)=>map.set(k,v),getItem:k=>map.get(k)??null,removeItem:k=>map.delete(k)};
+ try{
+  for(const [tool,c] of Object.entries(cases)){
+   const e=setup(tool);await import(`../src/app.mjs?isolated-save-${tool}`);
+   if(tool==='backup'){e.inputs.get('copies').value='3';await e.form.fire('change',e.inputs.get('copies'));}
+   for(const [name,v] of Object.entries(c.values))e.inputs.get(name).value=v;
+   await e.form.fire('input');await e.get('save-profile').fire('click');assert.match(e.get('profile-status').textContent,/保存しました/);
+  }
+  assert.equal(map.size,3);const snapshot=new Map(map);
+  for(const [tool,c] of Object.entries(cases)){
+   const e=setup(tool);await import(`../src/app.mjs?isolated-revisit-${tool}`);
+   const changedField=tool==='storage'?'photos':tool==='backup'?'original':'rate';
+   assert.notEqual(e.inputs.get(changedField).value,c.values[changedField],'no automatic restoration');
+   await e.get('load-profile').fire('click');
+   for(const [name,v] of Object.entries(c.values))assert.equal(e.inputs.get(name).value,v);
+   assert.match(e.result.innerHTML,c.result);await e.form.fire('submit');assert.match(e.result.innerHTML,c.result);
+   assert.deepEqual(map,snapshot,'load/recalculate must not write saved conditions');
+  }
+  const e=setup('storage');await import('../src/app.mjs?isolated-delete-storage');
+  await e.get('delete-profile').fire('click');assert.equal(map.has('dcl-conditions-v1:storage'),false);
+  for(const tool of ['backup','streaming']){
+   assert.equal(map.get('dcl-conditions-v1:'+tool),snapshot.get('dcl-conditions-v1:'+tool));
+   const next=setup(tool);await import(`../src/app.mjs?isolated-after-delete-${tool}`);
+   await next.get('load-profile').fire('click');assert.match(next.result.innerHTML,cases[tool].result);
+  }
+ }finally{globalThis.FormData=originalFormData;for(const name of ['document','location','history','navigator','localStorage'])delete globalThis[name];}
+});

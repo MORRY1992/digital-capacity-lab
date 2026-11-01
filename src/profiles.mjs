@@ -5,13 +5,20 @@ export function checkedConditions(tool,source){
  profileKey(tool);
  if(!source||typeof source!=='object'||Array.isArray(source))throw Error('保存条件の形式を確認してください。');
  const names=[...fields[tool]];
- if(tool==='backup'){const count=numeric(source.copies,5,true);for(let i=0;i<count;i++)names.push('dest'+i,'destUnit'+i);}
+ if(tool==='backup'){const count=numeric(source.copies,5,true);if(source.copies!==String(count))throw Error('保存条件の複製数を確認してください。削除して保存し直してください。');for(let i=0;i<count;i++)names.push('dest'+i,'destUnit'+i);}
  const values={};
- for(const name of names){if(!Object.hasOwn(source,name)||typeof source[name]!=='string'||source[name].length>128)throw Error('保存条件の項目を確認してください。');values[name]=source[name];}
+ // Core numeric/unit validation is broader than HTML number inputs and select options.
+ // Reject unrepresentable values before changing any form controls or destination rows.
+ for(const name of names){if(!Object.hasOwn(source,name)||typeof source[name]!=='string'||source[name].length>128||source[name]!==source[name].trim())throw Error('保存条件の項目を確認してください。削除して保存し直してください。');values[name]=source[name];}
  if(tool==='storage'){
+  if(!['MB','MiB'].includes(values.photoUnit))throw Error('保存条件の写真の単位を確認してください。削除して保存し直してください。');
   if(values.audioMode==='included')values.audio='128';
   media(values);
- }else if(tool==='backup')backup({...values,destinations:Array.from({length:Number(values.copies)},(_,i)=>({capacity:values['dest'+i],unit:values['destUnit'+i]}))});
+ }else if(tool==='backup'){
+  const units=['GB','GiB','TB','TiB'];
+  if(!units.includes(values.unit)||Array.from({length:Number(values.copies)},(_,i)=>values['destUnit'+i]).some(unit=>!units.includes(unit)))throw Error('保存条件の保存先の単位を確認してください。削除して保存し直してください。');
+  backup({...values,destinations:Array.from({length:Number(values.copies)},(_,i)=>({capacity:values['dest'+i],unit:values['destUnit'+i]}))});
+ }
  else streaming(values);
  return values;
 }
