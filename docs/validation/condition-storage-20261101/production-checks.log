@@ -1,0 +1,47 @@
+2026-11-01T10:04:44.9936134Z # tests 59
+2026-11-01T10:04:44.9936900Z # pass 59
+2026-11-01T10:04:44.9937143Z # fail 0
+2026-11-01T10:04:45.5799844Z # tests 59
+2026-11-01T10:04:45.5800690Z # pass 59
+2026-11-01T10:04:45.5801041Z # fail 0
+2026-11-01T10:05:07.4837709Z PASS deployed modules match tested sources; latest-main site metadata present {"origin":"https://digital-capacity-lab.pages.dev"}
+2026-11-01T10:05:09.6935423Z PASS 1280px storage explicit save/load/reload/recalculate {"expected":"3.534 GB"}
+2026-11-01T10:05:11.2269529Z PASS 1280px backup explicit save/load/reload/recalculate {"expected":"240 GB"}
+2026-11-01T10:05:12.8593222Z PASS 1280px streaming explicit save/load/reload/recalculate {"expected":"216 GB"}
+2026-11-01T10:05:17.5298212Z PASS 1280px tab-close persistence and independent deletion {}
+2026-11-01T10:05:19.2233221Z PASS 360px storage layout {"innerWidth":360,"scroll":360,"buttons":[{"id":"save-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"load-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"delete-profile","left":54,"right":306,"width":252,"height":50.796875}]}
+2026-11-01T10:05:19.4159053Z PASS 360px storage explicit save/load/reload/recalculate {"expected":"3.534 GB"}
+2026-11-01T10:05:21.0729214Z PASS 360px backup layout {"innerWidth":360,"scroll":360,"buttons":[{"id":"save-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"load-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"delete-profile","left":54,"right":306,"width":252,"height":50.796875}]}
+2026-11-01T10:05:21.2800662Z PASS 360px backup explicit save/load/reload/recalculate {"expected":"240 GB"}
+2026-11-01T10:05:22.9563006Z PASS 360px streaming layout {"innerWidth":360,"scroll":360,"buttons":[{"id":"save-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"load-profile","left":54,"right":306,"width":252,"height":50.796875},{"id":"delete-profile","left":54,"right":306,"width":252,"height":50.796875}]}
+2026-11-01T10:05:23.1544043Z PASS 360px streaming explicit save/load/reload/recalculate {"expected":"216 GB"}
+2026-11-01T10:05:28.0296785Z PASS 360px tab-close persistence and independent deletion {}
+2026-11-01T10:05:29.7890894Z PASS 390px storage layout {"innerWidth":390,"scroll":390,"buttons":[{"id":"save-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"load-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"delete-profile","left":54,"right":336,"width":282,"height":50.796875}]}
+2026-11-01T10:05:29.9828220Z PASS 390px storage explicit save/load/reload/recalculate {"expected":"3.534 GB"}
+2026-11-01T10:05:31.5723475Z PASS 390px backup layout {"innerWidth":390,"scroll":390,"buttons":[{"id":"save-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"load-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"delete-profile","left":54,"right":336,"width":282,"height":50.796875}]}
+2026-11-01T10:05:31.7821479Z PASS 390px backup explicit save/load/reload/recalculate {"expected":"240 GB"}
+2026-11-01T10:05:33.3388051Z PASS 390px streaming layout {"innerWidth":390,"scroll":390,"buttons":[{"id":"save-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"load-profile","left":54,"right":336,"width":282,"height":50.796875},{"id":"delete-profile","left":54,"right":336,"width":282,"height":50.796875}]}
+2026-11-01T10:05:33.5356618Z PASS 390px streaming explicit save/load/reload/recalculate {"expected":"216 GB"}
+2026-11-01T10:05:38.2452407Z PASS 390px tab-close persistence and independent deletion {}
+2026-11-01T10:05:38.2495894Z PASS no uncaught browser exceptions {}
+2026-11-01T10:05:38.4130958Z PASS /
+2026-11-01T10:05:38.4943385Z PASS /storage/
+2026-11-01T10:05:38.5174330Z PASS /backup/
+2026-11-01T10:05:38.5567631Z PASS /streaming/
+2026-11-01T10:05:38.5930125Z PASS /units/
+2026-11-01T10:05:38.7080658Z PASS /video-guide/
+2026-11-01T10:05:38.7717107Z PASS /backup-guide/
+2026-11-01T10:05:38.8196253Z PASS /streaming-guide/
+2026-11-01T10:05:38.8436510Z PASS /guide/
+2026-11-01T10:05:38.8837558Z PASS /about/
+2026-11-01T10:05:38.9460223Z PASS /privacy/
+2026-11-01T10:05:38.9702382Z PASS /terms/
+2026-11-01T10:05:39.1116109Z PASS /contact/
+2026-11-01T10:05:39.1685771Z PASS /robots.txt
+2026-11-01T10:05:39.1831657Z PASS /sitemap.xml
+2026-11-01T10:05:39.2219738Z PASS /ads.txt
+2026-11-01T10:05:39.2502575Z PASS /core.mjs
+2026-11-01T10:05:39.2661885Z PASS /app.mjs
+2026-11-01T10:05:39.2807338Z PASS /profiles.mjs
+2026-11-01T10:05:39.3019077Z PASS /style.css
+2026-11-01T10:05:39.3459800Z PASS /favicon.svg
