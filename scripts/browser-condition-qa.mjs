@@ -65,11 +65,11 @@ try{
    await page.locator('.profile-controls summary').click();await page.locator('#load-profile').click();
    assert.deepEqual(await values(page),savedValues);assert.equal(await page.locator('#result .big').innerText(),c.expected);
    await submit(page);assert.equal(await page.locator('#result .big').innerText(),c.expected);
-   if(width<500){const details=await layout(page,width);record(`${width}px ${tool} layout`,details);await page.locator('.profile-controls').screenshot({path:`${out}/${width}-${tool}-controls.png`});await page.locator('#result').screenshot({path:`${out}/${width}-${tool}-result.png`});}
+   if(width<500){await page.locator('.profile-controls summary').click();assert.equal(await page.locator('.profile-controls').evaluate(e=>e.open),false);await page.locator('.profile-controls summary').click();const details=await layout(page,width);record(`${width}px ${tool} layout`,details);await page.locator('.profile-controls').screenshot({path:`${out}/${width}-${tool}-controls.png`});await page.locator('#result').screenshot({path:`${out}/${width}-${tool}-result.png`});}
    record(`${width}px ${tool} explicit save/load/reload/recalculate`,{expected:c.expected});
   }
   // Verify persistence in a different tab with the same disposable browser context.
-  const revisit=await context.newPage();await page.close();
+  const revisit=await context.newPage();revisit.on('pageerror',e=>errors.push(e.message));await page.close();
   await open(revisit,'streaming');await revisit.locator('#load-profile').click();assert.equal(await revisit.locator('#result .big').innerText(),cases.streaming.expected);
   const saved=await revisit.evaluate(()=>Object.fromEntries(Object.keys(localStorage).map(k=>[k,localStorage.getItem(k)])));
   for(const tool of ['storage','backup','streaming']){

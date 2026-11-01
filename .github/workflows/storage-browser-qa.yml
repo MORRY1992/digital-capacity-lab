@@ -1,4 +1,4 @@
-name: Condition storage browser QA
+name: Condition storage production QA
 on:
   push:
     branches: [codex/storage-browser-qa-20261101]
@@ -24,11 +24,13 @@ jobs:
         run: |
           npm install --prefix "$RUNNER_TEMP/dcl-browser" --no-audit --no-fund playwright@1.56.1
           "$RUNNER_TEMP/dcl-browser/node_modules/.bin/playwright" install --with-deps chromium
-      - name: Preview failures and mobile save operations
+      - name: Production calculation and mobile save operations
         env:
           DCL_PLAYWRIGHT_DIR: ${{ runner.temp }}/dcl-browser
-          SITE_URL: https://codex-condition-storage-vali.digital-capacity-lab.pages.dev
-        run: node scripts/browser-condition-qa.mjs
+          SITE_URL: https://digital-capacity-lab.pages.dev
+        run: |
+          node scripts/browser-condition-qa.mjs --production
+          node scripts/check-live.mjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
