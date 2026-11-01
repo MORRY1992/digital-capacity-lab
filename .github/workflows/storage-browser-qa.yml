@@ -1,0 +1,37 @@
+name: Condition storage browser QA
+on:
+  push:
+    branches: [codex/storage-browser-qa-20261101]
+permissions:
+  contents: read
+jobs:
+  browser:
+    if: ${{ github.event.repository.private == false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Existing tests in draft and production builds
+        run: |
+          node scripts/build.mjs
+          node --test tests/*.test.mjs
+          SITE_URL=https://digital-capacity-lab.pages.dev CONTACT_URL=https://github.com/MORRY1992/digital-capacity-lab/issues node scripts/build.mjs --production
+          node --test tests/*.test.mjs
+      - name: Install isolated test browser
+        run: |
+          npm install --prefix "$RUNNER_TEMP/dcl-browser" --no-audit --no-fund playwright@1.56.1
+          "$RUNNER_TEMP/dcl-browser/node_modules/.bin/playwright" install --with-deps chromium
+      - name: Preview failures and mobile save operations
+        env:
+          DCL_PLAYWRIGHT_DIR: ${{ runner.temp }}/dcl-browser
+          SITE_URL: https://codex-condition-storage-vali.digital-capacity-lab.pages.dev
+        run: node scripts/browser-condition-qa.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: condition-storage-browser-qa
+          path: qa-results/
+          retention-days: 1
