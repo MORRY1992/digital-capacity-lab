@@ -1,0 +1,268 @@
+{
+  "origin": "https://codex-condition-storage-vali.digital-capacity-lab.pages.dev",
+  "production": false,
+  "engine": "141.0.7390.37",
+  "androidPhysicalDevice": false,
+  "checks": [
+    {
+      "name": "deployed modules match tested sources; latest-main site metadata present",
+      "origin": "https://codex-condition-storage-vali.digital-capacity-lab.pages.dev"
+    },
+    {
+      "name": "1280px storage explicit save/load/reload/recalculate",
+      "expected": "3.534 GB"
+    },
+    {
+      "name": "1280px backup explicit save/load/reload/recalculate",
+      "expected": "240 GB"
+    },
+    {
+      "name": "1280px streaming explicit save/load/reload/recalculate",
+      "expected": "216 GB"
+    },
+    {
+      "name": "1280px tab-close persistence and independent deletion"
+    },
+    {
+      "name": "360px storage layout",
+      "innerWidth": 360,
+      "scroll": 360,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "360px storage explicit save/load/reload/recalculate",
+      "expected": "3.534 GB"
+    },
+    {
+      "name": "360px backup layout",
+      "innerWidth": 360,
+      "scroll": 360,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "360px backup explicit save/load/reload/recalculate",
+      "expected": "240 GB"
+    },
+    {
+      "name": "360px streaming layout",
+      "innerWidth": 360,
+      "scroll": 360,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 306,
+          "width": 252,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "360px streaming explicit save/load/reload/recalculate",
+      "expected": "216 GB"
+    },
+    {
+      "name": "360px tab-close persistence and independent deletion"
+    },
+    {
+      "name": "390px storage layout",
+      "innerWidth": 390,
+      "scroll": 390,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "390px storage explicit save/load/reload/recalculate",
+      "expected": "3.534 GB"
+    },
+    {
+      "name": "390px backup layout",
+      "innerWidth": 390,
+      "scroll": 390,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "390px backup explicit save/load/reload/recalculate",
+      "expected": "240 GB"
+    },
+    {
+      "name": "390px streaming layout",
+      "innerWidth": 390,
+      "scroll": 390,
+      "buttons": [
+        {
+          "id": "save-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "load-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        },
+        {
+          "id": "delete-profile",
+          "left": 54,
+          "right": 336,
+          "width": 282,
+          "height": 50.796875
+        }
+      ]
+    },
+    {
+      "name": "390px streaming explicit save/load/reload/recalculate",
+      "expected": "216 GB"
+    },
+    {
+      "name": "390px tab-close persistence and independent deletion"
+    },
+    {
+      "name": "storage corrupt data rejected without changing current values/results",
+      "cases": 21
+    },
+    {
+      "name": "storage storage getter/read/quota/delete failure retains saved bytes and calculation"
+    },
+    {
+      "name": "storage corrupt profile on initial navigation leaves default calculator usable"
+    },
+    {
+      "name": "backup corrupt data rejected without changing current values/results",
+      "cases": 25
+    },
+    {
+      "name": "backup storage getter/read/quota/delete failure retains saved bytes and calculation"
+    },
+    {
+      "name": "backup corrupt profile on initial navigation leaves default calculator usable"
+    },
+    {
+      "name": "streaming corrupt data rejected without changing current values/results",
+      "cases": 18
+    },
+    {
+      "name": "streaming storage getter/read/quota/delete failure retains saved bytes and calculation"
+    },
+    {
+      "name": "streaming corrupt profile on initial navigation leaves default calculator usable"
+    },
+    {
+      "name": "backup restores 0 destinations including their units"
+    },
+    {
+      "name": "backup restores 3 destinations including their units"
+    },
+    {
+      "name": "backup restores 5 destinations including their units"
+    },
+    {
+      "name": "no uncaught browser exceptions"
+    }
+  ],
+  "errors": []
+}
