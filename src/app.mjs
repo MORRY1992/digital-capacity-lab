@@ -36,6 +36,18 @@ function validate(){let first;
 const rows=entries=>`<dl>${entries.map(([k,v])=>`<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
 const big=(label,bytes)=>`<h2>${label}</h2><div class="big">${format(bytes)}</div><p class="secondary">同じ容量：${format(bytes,'GiB')}</p>`;
 const formula=text=>`<details class="details"><summary>この結果の計算式を見る</summary><p class="formula">${text}</p></details>`;
+function storageProjection(monthly) {
+ const months = [1, 6, 12, 24];
+ const lines = [
+  ['動画', monthly.video], ['写真', monthly.photo],
+  ['完全コピー1部', monthly.total], ['全保存先の合計', monthly.total * 2]
+ ];
+ return `<section class="storage-projection"><h3>保存期間ごとの容量内訳</h3>
+  <p>今回の写真・動画を毎月同じ量だけ追加し、元データと完全コピー1部をすべて残す場合です。</p>
+  ${months.map(month => `<details class="capacity-period" name="capacity-period" ${month === 1 ? 'open' : ''}>
+    <summary>${month}か月分</summary>${rows(lines.map(([label, bytes]) => [label, format(bytes * month)]))}
+   </details>`).join('')}</section>`;
+}
 function calculate(){
  clearMemo();
  if(!validate()){result.innerHTML='<h2>計算できませんでした</h2><p>入力欄のエラーをご確認ください。</p>';return;}
@@ -45,6 +57,7 @@ function calculate(){
   const v=Object.fromEntries(new FormData(form));const r=media(v);
   const share=r.total?r.video/r.total*100:0;
   result.innerHTML=big('写真＋動画の推定容量',r.total)+`<div class="bar" aria-hidden="true"><span style="width:${share}%"></span><span style="width:${r.total?100-share:0}%"></span></div>`+rows([['動画',format(r.video)],['写真',format(r.photo)],['合計ビットレート',r.totalRate.toLocaleString('ja-JP',{maximumFractionDigits:3})+' Mb/s']])+formula(`${r.totalRate} Mb/s × ${Number(v.minutes)*60}秒 × ${Number(v.count)}本 ÷ 8 ＋ 写真${Number(v.photos)}枚 × ${Number(v.size)} ${v.photoUnit}`)+`<p>固定の条件から求めた目安です。コンテナ等の追加分や実際の可変ビットレートの変動は反映しません。</p><a href="/backup/${backupFragment(r.total)}" style="color:#d7e5ff">この容量を引き継いでバックアップを計算 →</a><p>合計容量のみを次のページに引き継ぎます。</p>`;
+  result.innerHTML += storageProjection(r);
  }else if(tool==='backup'){
   const v=Object.fromEntries(new FormData(form));v.destinations=Array.from({length:Number(v.copies)},(_,i)=>({capacity:value('dest'+i),unit:value('destUnit'+i)}));const r=backup(v);
   result.innerHTML=big('1か所あたりに確保したい容量',r.each)+rows([['元データ',format(r.original)],['追加バックアップだけ',format(r.backupOnly)],['元＋複製の実データ合計',format(r.total)],['上乗せ込みの全体確保量',format(r.planned)]])+r.destinations.map((d,i)=>`<p class="dest-status ${d.sufficient?'good':'bad'}">保存先 ${i+1}：${d.sufficient?'確保可能':'容量不足'}<br>${d.sufficient?'計画後の残り '+format(d.available):'あと '+format(-d.available)+' 必要'}</p>`).join('')+formula(`実データ合計：${format(r.original)} ×（1＋${r.copies}）<br>1か所あたり：${format(r.original)} ×（1＋${Number(v.margin)}÷100）`)+`<p>${r.copies===0?'現在はバックアップなしの計画です。':''}元データの保存場所も上乗せ込みの全体確保量に含みます。元の保存場所の空き容量は判定していません。完全コピーのみの計算です。</p>`;
